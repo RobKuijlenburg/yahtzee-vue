@@ -148,7 +148,6 @@ export default {
             for (let side = 1; side <= DICE_SIDES; side++) {
                 this.$set(this.diceArray, side, 0)
             }
-            console.log(this.diceArray);
     },
   },
   
@@ -187,7 +186,6 @@ export default {
         let repDices = joinDices.toString().replace(/(.)\1/,'$1');
         let x = (/1234|2345|3456/.test(repDices));
         if (x === true) {
-           console.log('Small straight');
           return true;
         } else {
           return false;
@@ -200,7 +198,6 @@ export default {
         let repDices = joinDices.toString().replace(/(.)\1/,'$1');
         let x = (/12345|23456/.test(repDices));
         if (x === true) {
-          console.log('Large straight');
           return true;
         } else {
           return false;
