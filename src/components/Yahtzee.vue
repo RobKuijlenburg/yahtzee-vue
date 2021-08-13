@@ -114,9 +114,8 @@ export default {
   methods: {
 
     throwDice() {
-        Object.assign(this.$data, this.$options.data.call(this));
-        this.resetThrows();
-
+          Object.assign(this.$data, this.$options.data.call(this));
+          this.resetThrows();
           for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
