@@ -118,12 +118,13 @@ export default {
   methods: {
 
     throwDice() {
+        Object.assign(this.$data, this.$options.data.call(this));
         this.resetThrows();
-        this.straightCheck = [];
-        this.semiTotal = 0;
-        this.total = 0;
-        this.smStraight = 0;
-        this.lgStraight = 0;
+        // this.straightCheck = [];
+        // this.semiTotal = 0;
+        // this.total = 0;
+        // this.smStraight = 0;
+        // this.lgStraight = 0;
           for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
