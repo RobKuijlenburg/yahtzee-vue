@@ -47,7 +47,7 @@
             Small straight
           </td>
           <td>
-            {{getSmStraightScore}}
+            {{smStraight}}
           </td>
         </tr>
 
@@ -56,7 +56,7 @@
             Large straight
           </td>
           <td>
-            {{getLgStraightScore}}
+            {{lgStraight}}
           </td>
         </tr>
 
@@ -105,13 +105,25 @@ export default {
       diceArray: {},
       straightCheck: [],
       semiTotal: 0,
-      total: 0
+      total: 0,
+      smStraight: 0,
+      lgStraight: 0,
+      dbSmSt: 0,
+      dbLgSt: 0,
+      dbFh: 0,
+      dbYah: 0
     };
-
   },
   
   methods: {
+
     throwDice() {
+        this.resetThrows();
+        this.straightCheck = [];
+        this.semiTotal = 0;
+        this.total = 0;
+        this.smStraight = 0;
+        this.lgStraight = 0;
           for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
@@ -119,10 +131,16 @@ export default {
           this.straightCheck.push(dice);
       }
       this.straightCheck.sort();
-      this.total = this.semiTotal + this.containsThreeOfAKind + this.containsFullHouse + this.containsFourOfAKind + this.containsYahtzee + this.getSmStraightScore + this.getLgStraightScore;
-      console.log(this.diceArray);
-      console.log(this.semiTotal);
-      console.log(this.straightCheck)
+      this.compareStraight();
+      this.total = this.semiTotal + this.containsThreeOfAKind + this.containsFullHouse + this.containsFourOfAKind + this.containsYahtzee + this.smStraight + this.lgStraight;
+    },
+
+    compareStraight() {
+      if (this.getSmStraightScore === true && this.getLgStraightScore === true){
+        this.lgStraight += 40;
+      } else if (this.getSmStraightScore === true && this.getLgStraightScore === false) {
+        this.smStraight += 30;
+      }
     },
 
     resetThrows() {
@@ -170,9 +188,9 @@ export default {
         let x = (/1234|2345|3456/.test(repDices));
         if (x === true) {
            console.log('Small straight');
-          return 30;
+          return true;
         } else {
-          return 0;
+          return false;
         }
        
     },
@@ -183,9 +201,9 @@ export default {
         let x = (/12345|23456/.test(repDices));
         if (x === true) {
           console.log('Large straight');
-          return 40;
+          return true;
         } else {
-          return 0;
+          return false;
         }
     },
 

@@ -1,19 +1,19 @@
 <template>
   <div id="app">
-      <Waterparks/>
+      <Yahtzee/>
       
   </div>
 </template>
 
 <script>
-import Waterparks from './components/Waterparks.vue'
+import Yahtzee from './components/Yahtzee.vue'
 
 export default {
   name: 'App',
 
   components: {
 
-    Waterparks
+    Yahtzee
 
   },
   
