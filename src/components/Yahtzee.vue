@@ -108,10 +108,6 @@ export default {
       total: 0,
       smStraight: 0,
       lgStraight: 0,
-      dbSmSt: 0,
-      dbLgSt: 0,
-      dbFh: 0,
-      dbYah: 0
     };
   },
   
@@ -120,11 +116,7 @@ export default {
     throwDice() {
         Object.assign(this.$data, this.$options.data.call(this));
         this.resetThrows();
-        // this.straightCheck = [];
-        // this.semiTotal = 0;
-        // this.total = 0;
-        // this.smStraight = 0;
-        // this.lgStraight = 0;
+
           for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
