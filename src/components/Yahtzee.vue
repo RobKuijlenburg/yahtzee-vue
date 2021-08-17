@@ -95,6 +95,7 @@
 
 <script>
 const DICE_SIDES = 6;
+// TODO :: use const instead of let where possible
 
 export default {
   name: 'Waterparks',
@@ -103,6 +104,8 @@ export default {
   data() {
     return {
       diceArray: {},
+
+      // TODO :: can all be computed properties
       straightCheck: [],
       semiTotal: 0,
       total: 0,
@@ -114,9 +117,10 @@ export default {
   methods: {
 
     throwDice() {
-          Object.assign(this.$data, this.$options.data.call(this));
-          this.resetThrows();
-          for (let i = 0 ; i < 5 ; i++) {
+      // TODO :: no need for this line
+      Object.assign(this.$data, this.$options.data.call(this));
+      this.resetThrows();
+      for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
           this.semiTotal += dice;
@@ -150,8 +154,11 @@ export default {
     containsFullHouse() {
       // return it so it can be processed
       // add logic: Object.values(this.diceArray) ....
+      // TODO :: Object.values(this.diceArray) is being repeated a lot
+      // Can also be a computed property
       if(Object.values(this.diceArray).includes(3) && Object.values(this.diceArray).includes(2)){
         return 25;
+        // TODO :: no need for the else if you return in the if
       } else {
         return 0;
       }
@@ -176,6 +183,7 @@ export default {
     getSmStraightScore() {
         let joinDices = this.straightCheck.join('');
         let repDices = joinDices.toString().replace(/(.)\1/,'$1');
+        // TODO :: can immediatly return the test
         let x = (/1234|2345|3456/.test(repDices));
         if (x === true) {
           return true;
