@@ -116,9 +116,7 @@ export default {
           this.diceArray[dice]++;
       }    
     },
-
-
-
+    
     resetThrows() {
             this.diceArray = {};
             for (let side = 1; side <= DICE_SIDES; side++) {
@@ -128,7 +126,6 @@ export default {
   },
   
   computed: {
-
 
     straightCheck(){
       let sC = [];
