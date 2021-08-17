@@ -1,17 +1,17 @@
 <template>
   <div class="hello">
-    <button @click="throwDice()">Click me!!!!</button>
+    <button @click="throwDice">Click me!!!!</button>
     <div>
       <p>
         You threw:
       </p>
       <table>
-        <tr v-for="(dice, index) in diceArray" :key="index">
+        <tr v-for="(count, die) in counter" :key="die">
           <td>
-            {{index}}
+            {{die}}
           </td>
           <td>
-            {{dice}}
+            {{count}}
           </td>
         </tr>
 
@@ -96,7 +96,6 @@
 <script>
 const DICE_SIDES = 6;
 const reducer = (accumulator, currentValue) => accumulator + currentValue;
-// TODO :: use const instead of let where possible
 
 export default {
   name: 'Yahtzee',
@@ -104,91 +103,73 @@ export default {
 
   data() {
     return {
-      diceArray: {},
-
-      // TODO :: can all be computed properties
-      straightCheck: [],
+      thrownDice:[],
     };
   },
   
   methods: {
     throwDice() {
-      this.resetThrows();
+      this.thrownDice = [];
       for (let i = 0 ; i < 5 ; i++) {
-          var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
-          this.diceArray[dice]++;
-          this.straightCheck.push(dice);
+          const dice = Math.floor(Math.random()*DICE_SIDES) + 1;
+          this.thrownDice.push(dice);
       }
-      this.straightCheck.sort();      
+      this.thrownDice.sort();      
     },
-
-
-
-    resetThrows() {
-            this.straightCheck = [];
-            this.diceArray = {};
-            for (let side = 1; side <= DICE_SIDES; side++) {
-                this.$set(this.diceArray, side, 0)
-            }
-    }
   },
   
-  props: {
-  },
-
   computed: {
     semiTotal(){
-      if (this.straightCheck.length != 0){
-      return this.straightCheck.reduce(reducer);
+      return this.thrownDice.reduce(reducer, 0);
+    },
+
+    counter(){
+      const counter = {}
+      for (let side = 1; side <= DICE_SIDES; side++) {
+        counter[side] = this.thrownDice.filter(die => die === side).length
+      }
+      return Object.values(counter);
+    },
+
+    containsFullHouse() {
+      if(this.counter.includes(3) && this.counter.includes(2)){
+        return 25;
+      }  
+      return 0;
+    },
+
+    containsThreeOfAKind() {
+      if (this.counter.includes(3)){
+        return this.semiTotal;
       }
       return 0;
     },
 
-    objectValues(){
-      return Object.values(this.diceArray);
-    },
-
-      containsFullHouse() {
-
-      if(this.objectValues.includes(3) && this.objectValues.includes(2)){
-        return 25;
-      }  
-        return 0;
-    },
-
-    containsThreeOfAKind() {
-      if (this.objectValues.includes(3)){
-        return this.semiTotal;
-      }
-        return 0;
-    },
-
     containsFourOfAKind() {
-      if (this.objectValues.includes(4)){
+      if (this.counter.includes(4)){
         return this.semiTotal;
       } 
-        return 0;
+      return 0;
     },
 
     getSmStraightScore() {
-        let joinDices = this.straightCheck.join('');
-        let repDices = joinDices.toString().replace(/(.)\1/,'$1');
-        return (/1234|2345|3456/.test(repDices))? 30 : 0;
+        const joinDices = this.thrownDice.join('');
+        const repDices = joinDices.toString().replace(/(.)\1/,'$1');
+        return (/1234|2345|3456/.test(repDices)) ? 30 : 0;
 
     },
 
     getLgStraightScore() {
-        let joinDices = this.straightCheck.join('');
-        let repDices = joinDices.toString().replace(/(.)\1/,'$1');
-        return (/12345|23456/.test(repDices))? 40 : 0;
+      const joinDices = this.thrownDice.join('');
+      const repDices = joinDices.toString().replace(/(.)\1/,'$1');
+      return (/12345|23456/.test(repDices)) ? 40 : 0;
     },
 
     containsYahtzee() {
-      if (this.objectValues.includes(5)){
+      if (this.counter.includes(5)){
         return 50;
       } 
-        return 0;
-    
+      return 0;
     },
 
 
@@ -200,10 +181,6 @@ export default {
       return this.semiTotal + this.containsThreeOfAKind + this.containsFullHouse + this.containsFourOfAKind + this.containsYahtzee + this.getSmStraightScore + this.getLgStraightScore;
     },
   },
-
-  mounted() {
-    this.resetThrows()
-  }
 }
 
 </script>
