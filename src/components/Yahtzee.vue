@@ -47,7 +47,7 @@
             Small straight
           </td>
           <td>
-            {{smStraight}}
+            {{getSmStraightScore}}
           </td>
         </tr>
 
@@ -56,7 +56,7 @@
             Large straight
           </td>
           <td>
-            {{lgStraight}}
+            {{getLgStraightScore}}
           </td>
         </tr>
 
@@ -95,10 +95,11 @@
 
 <script>
 const DICE_SIDES = 6;
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
 // TODO :: use const instead of let where possible
 
 export default {
-  name: 'Waterparks',
+  name: 'Yahtzee',
 
 
   data() {
@@ -107,125 +108,104 @@ export default {
 
       // TODO :: can all be computed properties
       straightCheck: [],
-      semiTotal: 0,
-      total: 0,
-      smStraight: 0,
-      lgStraight: 0,
     };
   },
   
   methods: {
-
     throwDice() {
-      // TODO :: no need for this line
-      Object.assign(this.$data, this.$options.data.call(this));
       this.resetThrows();
       for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
-          this.semiTotal += dice;
           this.straightCheck.push(dice);
       }
-      this.straightCheck.sort();
-      this.compareStraight();
-      this.total = this.semiTotal + this.containsThreeOfAKind + this.containsFullHouse + this.containsFourOfAKind + this.containsYahtzee + this.smStraight + this.lgStraight;
+      this.straightCheck.sort();      
     },
 
-    compareStraight() {
-      if (this.getSmStraightScore === true && this.getLgStraightScore === true){
-        this.lgStraight += 40;
-      } else if (this.getSmStraightScore === true && this.getLgStraightScore === false) {
-        this.smStraight += 30;
-      }
-    },
+
 
     resetThrows() {
+            this.straightCheck = [];
             this.diceArray = {};
             for (let side = 1; side <= DICE_SIDES; side++) {
                 this.$set(this.diceArray, side, 0)
             }
-    },
+    }
   },
   
   props: {
   },
 
   computed: {
-    containsFullHouse() {
-      // return it so it can be processed
-      // add logic: Object.values(this.diceArray) ....
-      // TODO :: Object.values(this.diceArray) is being repeated a lot
-      // Can also be a computed property
-      if(Object.values(this.diceArray).includes(3) && Object.values(this.diceArray).includes(2)){
-        return 25;
-        // TODO :: no need for the else if you return in the if
-      } else {
-        return 0;
+    semiTotal(){
+      if (this.straightCheck.length != 0){
+      return this.straightCheck.reduce(reducer);
       }
+      return 0;
+    },
+
+    objectValues(){
+      return Object.values(this.diceArray);
+    },
+
+      containsFullHouse() {
+
+      if(this.objectValues.includes(3) && this.objectValues.includes(2)){
+        return 25;
+      }  
+        return 0;
     },
 
     containsThreeOfAKind() {
-      if (Object.values(this.diceArray).includes(3)){
+      if (this.objectValues.includes(3)){
         return this.semiTotal;
-      } else {
-        return 0;
       }
+        return 0;
     },
 
     containsFourOfAKind() {
-      if (Object.values(this.diceArray).includes(4)){
+      if (this.objectValues.includes(4)){
         return this.semiTotal;
-      } else {
+      } 
         return 0;
-      }
     },
 
     getSmStraightScore() {
         let joinDices = this.straightCheck.join('');
         let repDices = joinDices.toString().replace(/(.)\1/,'$1');
-        // TODO :: can immediatly return the test
-        let x = (/1234|2345|3456/.test(repDices));
-        if (x === true) {
-          return true;
-        } else {
-          return false;
-        }
-       
+        return (/1234|2345|3456/.test(repDices))? 30 : 0;
+
     },
 
     getLgStraightScore() {
         let joinDices = this.straightCheck.join('');
         let repDices = joinDices.toString().replace(/(.)\1/,'$1');
-        let x = (/12345|23456/.test(repDices));
-        if (x === true) {
-          return true;
-        } else {
-          return false;
-        }
+        return (/12345|23456/.test(repDices))? 40 : 0;
     },
 
     containsYahtzee() {
-      if (Object.values(this.diceArray).includes(5)){
+      if (this.objectValues.includes(5)){
         return 50;
-      } else {
+      } 
         return 0;
-      }
+    
     },
+
 
     getChance() {
       return this.semiTotal;
     },
 
     getTotal(){
-      return this.total;
-    }
+      return this.semiTotal + this.containsThreeOfAKind + this.containsFullHouse + this.containsFourOfAKind + this.containsYahtzee + this.getSmStraightScore + this.getLgStraightScore;
+    },
   },
 
   mounted() {
     this.resetThrows()
-  },
-
+  }
 }
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
