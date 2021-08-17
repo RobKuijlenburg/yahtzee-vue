@@ -105,9 +105,6 @@ export default {
   data() {
     return {
       diceArray: {},
-
-      // TODO :: can all be computed properties
-      straightCheck: [],
     };
   },
   
@@ -117,15 +114,12 @@ export default {
       for (let i = 0 ; i < 5 ; i++) {
           var dice = Math.floor(Math.random()*DICE_SIDES) + 1;
           this.diceArray[dice]++;
-          this.straightCheck.push(dice);
-      }
-      this.straightCheck.sort();      
+      }    
     },
 
 
 
     resetThrows() {
-            this.straightCheck = [];
             this.diceArray = {};
             for (let side = 1; side <= DICE_SIDES; side++) {
                 this.$set(this.diceArray, side, 0)
@@ -133,10 +127,19 @@ export default {
     }
   },
   
-  props: {
-  },
-
   computed: {
+
+
+    straightCheck(){
+      let sC = [];
+      for (let x = 1; x <= 6; x++){
+        for (let u = 1; u <= this.diceArray[x]; u++){
+          sC.push(x);
+        }
+      }
+      return sC;
+    },
+    
     semiTotal(){
       if (this.straightCheck.length != 0){
       return this.straightCheck.reduce(reducer);
@@ -148,8 +151,7 @@ export default {
       return Object.values(this.diceArray);
     },
 
-      containsFullHouse() {
-
+    containsFullHouse() {
       if(this.objectValues.includes(3) && this.objectValues.includes(2)){
         return 25;
       }  
